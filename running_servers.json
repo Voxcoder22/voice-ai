@@ -1,0 +1,27 @@
+{
+    "ai-chat": {
+        "running": true,
+        "port": 5174,
+        "type": "frontend"
+    },
+    "notes-frontend": {
+        "running": true,
+        "port": 5175,
+        "type": "frontend"
+    },
+    "trello-style": {
+        "running": true,
+        "port": 5176,
+        "type": "frontend"
+    },
+    "jwt-authentication": {
+        "running": true,
+        "port": 5174,
+        "type": "frontend"
+    },
+    "to-do": {
+        "running": true,
+        "port": 5174,
+        "type": "frontend"
+    }
+}

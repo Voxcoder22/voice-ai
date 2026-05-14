@@ -192,47 +192,106 @@ export default function Home() {
 
   const recognitionRef = useRef(null);
 
-  const handleRecordingStart = () => {
-    setIsRecording(true);
+  const mediaRecorderRef = useRef(null)
 
-    const SpeechRecognition =
-      window.SpeechRecognition || window.webkitSpeechRecognition;
+const audioChunksRef = useRef([])
 
-    if (!SpeechRecognition) {
-      alert('Speech recognition is not supported in this browser.');
-      return;
-    }
+const handleRecordingStart = async () => {
 
-    const recognition = new SpeechRecognition();
+  try {
 
-    recognition.lang = 'en-US';
-    recognition.interimResults = false;
-    recognition.maxAlternatives = 1;
+    setIsRecording(true)
 
-    recognition.onresult = (event) => {
-      const transcript = event.results[0][0].transcript;
+    const stream =
+      await navigator.mediaDevices.getUserMedia({
+        audio: true
+      })
 
-      handleSend(transcript, 'voice');
-    };
+    const mediaRecorder =
+      new MediaRecorder(stream)
 
-    recognition.onerror = (event) => {
-      console.error('Speech recognition error:', event.error);
-    };
+    mediaRecorderRef.current =
+      mediaRecorder
 
-    recognition.onend = () => {
-      setIsRecording(false);
-    };
+    audioChunksRef.current = []
 
-    recognitionRef.current = recognition;
+    mediaRecorder.ondataavailable =
+      (event) => {
 
-    recognition.start();
-  };
+        audioChunksRef.current.push(
+          event.data
+        )
+      }
+
+    mediaRecorder.onstop =
+      async () => {
+
+        setIsProcessing(true)
+
+        const audioBlob = new Blob(
+
+          audioChunksRef.current,
+
+          {
+            type: "audio/webm"
+          }
+        )
+
+        const formData = new FormData()
+
+        formData.append(
+          "audio",
+          audioBlob,
+          "voice.webm"
+        )
+
+        try {
+
+          const response = await fetch(
+
+            "http://localhost:5000/api/voice",
+
+            {
+              method: "POST",
+              body: formData
+            }
+          )
+
+          const data =
+            await response.json()
+
+          console.log(data)
+
+          if (data.transcript) {
+
+            handleSend(
+              data.transcript,
+              "voice"
+            )
+          }
+
+        } catch (error) {
+
+          console.error(error)
+        }
+
+        setIsProcessing(false)
+      }
+
+    mediaRecorder.start()
+
+  } catch (error) {
+
+    console.error(error)
+  }
+}
 
   const handleRecordingStop = () => {
-    setIsRecording(false);
 
-    recognitionRef.current?.stop();
-  };
+  setIsRecording(false)
+
+  mediaRecorderRef.current?.stop()
+}
 
   const handleNewSession = () => {
     const newSession = {
