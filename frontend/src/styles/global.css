@@ -1,0 +1,189 @@
+/* ============================================================
+   GLOBAL STYLES — VoxCoder AI Coding Assistant
+   Design System: Industrial Terminal meets Modern AI Workspace
+   ============================================================ */
+
+:root {
+  /* Core Palette */
+  --bg-void:       #080a0f;
+  --bg-base:       #0d1117;
+  --bg-surface:    #111620;
+  --bg-elevated:   #161c2a;
+  --bg-panel:      #1a2030;
+  --bg-hover:      #1f2840;
+  --bg-active:     #232f4a;
+
+  /* Accent — Electric Cyan */
+  --accent-primary:   #00d4ff;
+  --accent-secondary: #0099cc;
+  --accent-glow:      rgba(0, 212, 255, 0.18);
+  --accent-glow-sm:   rgba(0, 212, 255, 0.08);
+
+  /* Accent — Neon Green (AI / Code) */
+  --green-bright:     #00ff88;
+  --green-dim:        #00cc6a;
+  --green-glow:       rgba(0, 255, 136, 0.15);
+
+  /* Accent — Amber (warnings/voice) */
+  --amber:            #ffb830;
+  --amber-glow:       rgba(255, 184, 48, 0.15);
+
+  /* Accent — Coral (errors) */
+  --coral:            #ff5f6d;
+  --coral-glow:       rgba(255, 95, 109, 0.15);
+
+  /* Text */
+  --text-primary:   #e8edf5;
+  --text-secondary: #8892a4;
+  --text-muted:     #4a5568;
+  --text-accent:    #00d4ff;
+  --text-code:      #00ff88;
+
+  /* Borders */
+  --border-subtle:  rgba(255, 255, 255, 0.05);
+  --border-dim:     rgba(255, 255, 255, 0.08);
+  --border-mid:     rgba(255, 255, 255, 0.12);
+  --border-accent:  rgba(0, 212, 255, 0.3);
+
+  /* Typography */
+  --font-ui:        'Syne', sans-serif;
+  --font-mono:      'DM Mono', monospace;
+  --font-code:      'JetBrains Mono', monospace;
+
+  /* Spacing */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  20px;
+  --space-6:  24px;
+  --space-8:  32px;
+
+  /* Layout */
+  --sidebar-width:    260px;
+  --rightpanel-width: 380px;
+  --navbar-height:    52px;
+  --statusbar-height: 28px;
+
+  /* Radius */
+  --radius-sm:  4px;
+  --radius-md:  8px;
+  --radius-lg:  12px;
+  --radius-xl:  16px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm:  0 1px 3px rgba(0,0,0,0.4);
+  --shadow-md:  0 4px 12px rgba(0,0,0,0.5);
+  --shadow-lg:  0 8px 32px rgba(0,0,0,0.6);
+  --shadow-accent: 0 0 20px rgba(0, 212, 255, 0.2);
+  --shadow-green:  0 0 20px rgba(0, 255, 136, 0.2);
+
+  /* Transitions */
+  --transition-fast:   0.12s ease;
+  --transition-base:   0.22s ease;
+  --transition-slow:   0.4s ease;
+}
+
+/* ---- Reset ---- */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  background: var(--bg-void);
+  color: var(--text-primary);
+  font-family: var(--font-ui);
+  font-size: 14px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---- Scrollbar ---- */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-mid);
+  border-radius: var(--radius-full);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* ---- Utility ---- */
+.mono  { font-family: var(--font-mono); }
+.code  { font-family: var(--font-code); }
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+}
+
+/* ---- Animated grid overlay ---- */
+.grid-bg {
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--border-subtle) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border-subtle) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ---- Glow keyframes ---- */
+@keyframes pulseGlow {
+  0%, 100% { opacity: 0.6; }
+  50%       { opacity: 1; }
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes slideInLeft {
+  from { transform: translateX(-12px); opacity: 0; }
+  to   { transform: translateX(0);     opacity: 1; }
+}
+@keyframes slideInRight {
+  from { transform: translateX(12px); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+@keyframes slideInUp {
+  from { transform: translateY(10px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+@keyframes waveBar {
+  0%, 100% { transform: scaleY(0.2); }
+  50%       { transform: scaleY(1); }
+}
+@keyframes dotPulse {
+  0%, 80%, 100% { transform: scale(0); opacity: 0; }
+  40%           { transform: scale(1); opacity: 1; }
+}

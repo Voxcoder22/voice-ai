@@ -1,0 +1,134 @@
+.voice-btn-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  position: relative;
+}
+
+/* Waveform animation */
+.voice-waveform {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  height: 24px;
+  position: absolute;
+  bottom: calc(100% + 12px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 4px 10px;
+  background: var(--bg-panel);
+  border: 1px solid rgba(255, 95, 109, 0.3);
+  border-radius: var(--radius-full);
+  box-shadow: 0 0 16px rgba(255, 95, 109, 0.2);
+}
+
+.voice-waveform__bar {
+  display: block;
+  width: 3px;
+  height: 100%;
+  background: var(--coral);
+  border-radius: var(--radius-full);
+  transform-origin: center;
+  animation: waveBar 0.6s ease-in-out infinite alternate;
+}
+
+/* Main button */
+.voice-btn {
+  position: relative;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-base);
+  outline: none;
+  overflow: visible;
+}
+
+.voice-btn--idle {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-mid);
+  color: var(--text-secondary);
+}
+
+.voice-btn--idle:hover {
+  background: var(--bg-active);
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+  box-shadow: 0 0 16px var(--accent-glow-sm);
+}
+
+.voice-btn--recording {
+  background: radial-gradient(circle, #3d0a10, #200609);
+  border: 1.5px solid var(--coral);
+  color: var(--coral);
+  box-shadow: 0 0 24px var(--coral-glow), inset 0 0 12px rgba(255,95,109,0.1);
+}
+
+.voice-btn--processing {
+  background: var(--bg-elevated);
+  border: 1px solid var(--amber);
+  color: var(--amber);
+  cursor: not-allowed;
+}
+
+/* Pulse rings */
+.voice-pulse {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1.5px solid var(--coral);
+  pointer-events: none;
+}
+
+.voice-pulse--1 {
+  animation: pulseRing 1.4s ease-out infinite;
+}
+
+.voice-pulse--2 {
+  animation: pulseRing 1.4s ease-out infinite 0.5s;
+}
+
+@keyframes pulseRing {
+  0%   { transform: scale(1);   opacity: 0.7; }
+  100% { transform: scale(2);   opacity: 0;   }
+}
+
+/* Icon */
+.voice-btn__icon {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Spinner (processing state) */
+.voice-btn__spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--amber-glow);
+  border-top-color: var(--amber);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+/* Label */
+.voice-btn__label {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  white-space: nowrap;
+  transition: color var(--transition-fast);
+}
+
+.voice-btn-wrap--recording .voice-btn__label {
+  color: var(--coral);
+}
