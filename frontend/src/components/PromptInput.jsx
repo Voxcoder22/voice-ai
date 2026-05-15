@@ -12,6 +12,7 @@ export default function PromptInput({
   onSend,
   onRecordingStart,
   onRecordingStop,
+  onVoiceTranscript,
   isProcessing,
 }) {
   const [value, setValue] = useState('');
@@ -41,7 +42,7 @@ export default function PromptInput({
   return (
     <div className="prompt-bar">
       {/* Quick action chips */}
-      <div className="prompt-chips">
+      {/* <div className="prompt-chips">
         {['Write a Flask API', 'Fix this bug', 'Explain the code', 'Add unit tests'].map(chip => (
           <button
             key={chip}
@@ -53,7 +54,7 @@ export default function PromptInput({
             {chip}
           </button>
         ))}
-      </div>
+      </div> */}
 
       {/* Input row */}
       <div className="prompt-input-row">
@@ -61,6 +62,7 @@ export default function PromptInput({
         <VoiceButton
           onRecordingStart={onRecordingStart}
           onRecordingStop={onRecordingStop}
+          onTranscript={onVoiceTranscript}
           disabled={isProcessing}
         />
 

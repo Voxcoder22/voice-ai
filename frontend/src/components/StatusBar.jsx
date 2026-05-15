@@ -26,10 +26,6 @@ export default function StatusBar({ isRecording, isProcessing, sessionDuration =
         </div>
 
         {/* Model */}
-        <div className="status-item status-item--neutral">
-          <BsCpu size={10} />
-          <span>Claude 3.5 Sonnet</span>
-        </div>
 
         {/* Voice state */}
         <div className={`status-item ${isRecording ? 'status-item--recording' : 'status-item--neutral'}`}>
@@ -48,19 +44,6 @@ export default function StatusBar({ isRecording, isProcessing, sessionDuration =
       </div>
 
       {/* Right group */}
-      <div className="status-bar__group status-bar__group--right">
-        <div className="status-item status-item--neutral">
-          <BsClock size={10} />
-          <span>{sessionDuration}</span>
-        </div>
-        <div className="status-item status-item--neutral">
-          <BsHddFill size={10} />
-          <span>240 tokens</span>
-        </div>
-        <div className="status-item status-item--neutral">
-          <span>Context: 12%</span>
-        </div>
-      </div>
     </footer>
   );
 }

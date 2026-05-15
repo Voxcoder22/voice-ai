@@ -23,5 +23,45 @@
         "running": true,
         "port": 5174,
         "type": "frontend"
+    },
+    "and-calculate": {
+        "running": true,
+        "port": 5174,
+        "type": "frontend"
+    },
+    "work-on": {
+        "running": true,
+        "port": 5174,
+        "type": "frontend"
+    },
+    "what-i": {
+        "running": true,
+        "port": 5175,
+        "type": "frontend"
+    },
+    "main-calculator": {
+        "running": true,
+        "port": 5174,
+        "type": "frontend"
+    },
+    "calculator": {
+        "running": true,
+        "port": 5174,
+        "type": "frontend"
+    },
+    "hi-there": {
+        "running": true,
+        "port": 5174,
+        "type": "frontend"
+    },
+    "and-calculator": {
+        "running": true,
+        "port": 5174,
+        "type": "frontend"
+    },
+    "i-want": {
+        "running": true,
+        "port": 5174,
+        "type": "frontend"
     }
 }

@@ -93,10 +93,21 @@
 
 import React, {
   useRef,
-  useState
+  useState,
+  useEffect
 } from "react"
 
-const VoiceButton = () => {
+import {
+
+  startWakeWordListener,
+
+  stopWakeWordListener
+
+} from "../services/wake_word_service"
+
+const VoiceButton = ({
+  onTranscript
+}) => {
 
   const mediaRecorderRef = useRef(null)
 
@@ -108,10 +119,35 @@ const VoiceButton = () => {
 
   const [transcript, setTranscript] = useState("")
 
+  useEffect(() => {
+
+  startWakeWordListener(
+
+    () => {
+
+      console.log(
+        "Wake Word Detected"
+      )
+
+      // -----------------------------------
+      // STOP WAKE LISTENER
+      // -----------------------------------
+      stopWakeWordListener()
+
+      // -----------------------------------
+      // START REAL RECORDING
+      // -----------------------------------
+      startRecording()
+    }
+  )
+
+}, [])
+
   // -----------------------------------
   // START RECORDING
   // -----------------------------------
   const startRecording = async () => {
+    speechSynthesis.cancel()
 
     try {
 
@@ -175,9 +211,15 @@ const VoiceButton = () => {
 
             console.log(data)
 
-            if (data.transcript) {
+            if (
 
-              setTranscript(
+              data.transcript &&
+
+              onTranscript
+
+            ) {
+
+              onTranscript(
                 data.transcript
               )
             }
@@ -188,6 +230,20 @@ const VoiceButton = () => {
           }
 
           setProcessing(false)
+
+          startWakeWordListener(
+
+            () => {
+
+              console.log(
+                "Wake Word Detected"
+              )
+
+              stopWakeWordListener()
+
+              startRecording()
+            }
+          )
         }
 
       mediaRecorder.start()
@@ -241,7 +297,7 @@ const VoiceButton = () => {
 
       </button>
 
-      {
+      {/* {
         transcript && (
 
           <p className="text-sm text-gray-300">
@@ -250,7 +306,7 @@ const VoiceButton = () => {
 
           </p>
         )
-      }
+      } */}
 
     </div>
   )

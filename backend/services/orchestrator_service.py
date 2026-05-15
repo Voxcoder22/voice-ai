@@ -70,6 +70,88 @@ def detect_project_type(prompt):
     return None
 
 # -----------------------------------
+# NORMAL CHAT DETECTION
+# -----------------------------------
+# -----------------------------------
+# NORMAL CHAT DETECTION
+# -----------------------------------
+def is_normal_chat(prompt):
+
+    prompt = prompt.lower()
+
+    coding_keywords = [
+
+        "create",
+        "build",
+        "generate",
+        "make",
+        "react",
+        "python",
+        "java",
+        "fix",
+        "install",
+        "project",
+        "component",
+        "frontend",
+        "backend",
+        "api",
+        "code",
+        "app",
+        "website",
+        "html",
+        "css",
+        "javascript",
+        "flask",
+        "node",
+        "express",
+        "mongodb",
+        "sql"
+    ]
+
+    # -----------------------------------
+    # IF ANY CODING WORD EXISTS
+    # -----------------------------------
+    for word in coding_keywords:
+
+        if word in prompt:
+
+            return False
+
+    # -----------------------------------
+    # SHORT CONVERSATION DETECTION
+    # -----------------------------------
+    normal_chat_phrases = [
+
+        "how are you",
+        "how you doing",
+        "what's up",
+        "who are you",
+        "tell me",
+        "hello",
+        "hi",
+        "hey",
+        "good morning",
+        "good evening",
+        "thank you",
+        "thanks"
+    ]
+
+    for phrase in normal_chat_phrases:
+
+        if phrase in prompt:
+
+            return True
+
+    # -----------------------------------
+    # DEFAULT SHORT TEXT CHAT
+    # -----------------------------------
+    if len(prompt.split()) <= 6:
+
+        return True
+
+    return False
+
+# -----------------------------------
 # DETECT NEW PROJECT REQUEST
 # -----------------------------------
 def is_new_project_request(prompt):
@@ -340,6 +422,28 @@ def get_or_create_project(
 # MAIN ORCHESTRATOR
 # -----------------------------------
 def process_prompt(prompt):
+
+    # -----------------------------------
+    # NORMAL CHAT FLOW
+    # -----------------------------------
+    if is_normal_chat(prompt):
+
+        print(
+            "\nNormal Conversation Detected\n"
+        )
+
+        ai_response = generate_ai_response(
+            prompt
+        )
+
+        return {
+
+            "success": True,
+
+            "message": ai_response,
+
+            "chat_mode": True
+        }
 
     # -----------------------------------
     # CHECK REQUEST TYPES
@@ -763,6 +867,11 @@ USER REQUEST:
         )
 
     return {
+
         "success": True,
-        "message": f"{project_type} project updated successfully"
+
+        "message":
+            f"{project_type} project updated successfully",
+
+        "files": files
     }

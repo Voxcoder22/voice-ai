@@ -215,14 +215,14 @@ export default function GeneratedCodePanel({ files = [] }) {
             <span className="exec-label">Syntax</span>
             <span className="exec-badge exec-badge--ok">✓ Valid</span>
           </div>
-          <div className="code-panel__exec-row">
+          {/* <div className="code-panel__exec-row">
             <span className="exec-label">Runtime</span>
             <span className="exec-badge exec-badge--idle">Not run</span>
           </div>
           <div className="code-panel__exec-row">
             <span className="exec-label">Last update</span>
             <span className="exec-badge exec-badge--info">10:43:08</span>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

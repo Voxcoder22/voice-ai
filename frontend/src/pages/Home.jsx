@@ -1,4 +1,9 @@
-import { useState, useCallback, useRef } from 'react';
+import {
+  useState,
+  useCallback,
+  useRef,
+  useEffect
+} from 'react';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import ChatContainer from '../components/ChatContainer';
@@ -8,6 +13,7 @@ import PromptInput from '../components/PromptInput';
 import StatusBar from '../components/StatusBar';
 import { generateAIResponse } from '../services/api';
 import './Home.css';
+
 
 /**
  * Home page — root layout orchestrating all panels
@@ -48,21 +54,44 @@ export default function Home() {
   const [isRecording,  setIsRecording]  = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [isTyping,     setIsTyping]     = useState(false);
-  const [messages, setMessages] = useState([
+  const [messages, setMessages] = useState(() => {
+
+  const savedMessages = localStorage.getItem(
+    'voxcode-messages'
+  )
+
+  if (savedMessages) {
+
+    return JSON.parse(
+      savedMessages
+    )
+  }
+
+  return [
+
     {
       id: 'welcome',
+
       role: 'ai',
+
       content:
         'Hello! I am VoxCoder. Describe the application you want to build.',
-      timestamp: new Date().toLocaleTimeString('en-GB', {
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-      }),
+
+      timestamp: new Date().toLocaleTimeString(
+        'en-GB',
+        {
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+        }
+      ),
+
       origin: 'text',
+
       state: 'complete',
     },
-  ]);
+  ]
+});
   const [activeSession, setActiveSession] = useState('s1');
   const [sessions, setSessions] = useState([
     {
@@ -77,6 +106,16 @@ export default function Home() {
   const [rightPanel, setRightPanel]     = useState('code'); // 'code' | 'logs'
   const msgIdRef = useRef(100);
   const [generatedFiles, setGeneratedFiles] = useState([]);
+  useEffect(() => {
+
+  localStorage.setItem(
+
+    'voxcode-messages',
+
+    JSON.stringify(messages)
+  )
+
+}, [messages])
 
   const nextId = () => `m${++msgIdRef.current}`;
 
@@ -147,6 +186,59 @@ export default function Home() {
   //   setIsProcessing(false);
   // }, []);
 
+const speakText = (
+  text
+) => {
+
+  speechSynthesis.cancel()
+
+  const utterance =
+    new SpeechSynthesisUtterance(
+      text
+    )
+
+  // -----------------------------------
+  // SOFT NATURAL SETTINGS
+  // -----------------------------------
+  utterance.rate = 0.9
+
+  utterance.pitch = 1.1
+
+  utterance.volume = 1
+
+  // -----------------------------------
+  // GET AVAILABLE VOICES
+  // -----------------------------------
+  const voices =
+    speechSynthesis.getVoices()
+
+  // -----------------------------------
+  // PREFER FEMALE / NATURAL VOICES
+  // -----------------------------------
+  const preferredVoice = voices.find(
+
+    voice =>
+
+      voice.name.includes('Samantha') ||
+
+      voice.name.includes('Google UK English Female') ||
+
+      voice.name.includes('Microsoft Aria') ||
+
+      voice.name.includes('Jenny')
+  )
+
+  if (preferredVoice) {
+
+    utterance.voice =
+      preferredVoice
+  }
+
+  speechSynthesis.speak(
+    utterance
+  )
+}
+
   const handleSend = useCallback(async (promptText, origin = 'text') => {
     if (!promptText.trim()) return;
 
@@ -158,17 +250,127 @@ export default function Home() {
       timestamp: timestamp(),
       origin,
       state: 'complete',
-    };
+    }
 
-    setMessages(prev => [...prev, userMsg]);
+    setMessages(prev => [
 
-    // 2. Show typing indicator
+      ...prev,
+
+      userMsg
+    ]);
+
+    // -----------------------------------
+    // AI WORKING MESSAGE
+    // -----------------------------------
+    const workingMsg = {
+
+      id: nextId(),
+
+      role: 'ai',
+
+      content: 'Sure, working on it...',
+
+      timestamp: timestamp(),
+
+      origin: 'system',
+
+      state: 'thinking',
+    }
+
+    setMessages(prev => [
+
+      ...prev,
+
+      workingMsg
+    ])
+
+    // -----------------------------------
+    // SHOW PROCESSING
+    // -----------------------------------
     setIsTyping(true);
+
     setIsProcessing(true);
+    
 
     // 3. Get AI response
-    const aiResponse = await generateAIResponse(promptText);
 
+    const response = await fetch(
+
+      'http://localhost:5000/api/generate',
+
+      {
+        method: 'POST',
+
+        headers: {
+          'Content-Type':
+            'application/json'
+        },
+
+        body: JSON.stringify({
+
+          prompt: promptText
+        })
+      }
+    )
+
+    const data =
+      await response.json()
+
+      console.log(data)
+
+    let aiResponse =
+      data.message
+
+    // -----------------------------------
+    // GENERATED FILES
+    // -----------------------------------
+    if (data.files) {
+
+      const formattedFiles = data.files.map(
+
+        (file, index) => ({
+
+          id: `file-${index}`,
+
+          filename: file.filename,
+
+          language:
+
+            file.filename.endsWith('.py')
+
+              ? 'python'
+
+              : file.filename.endsWith('.jsx')
+
+              ? 'javascript'
+
+              : file.filename.endsWith('.js')
+
+              ? 'javascript'
+
+              : file.filename.endsWith('.css')
+
+              ? 'css'
+
+              : file.filename.endsWith('.html')
+
+              ? 'html'
+
+              : 'text',
+
+          status: 'generated',
+
+          lines:
+            file.content.split('\n').length,
+
+          code: file.content
+        })
+      )
+
+      setGeneratedFiles(
+        formattedFiles
+      )
+    }
     // 4. Extract generated files
     const extractedFiles = extractFiles(aiResponse);
 
@@ -185,10 +387,63 @@ export default function Home() {
     };
 
     setIsTyping(false);
-    setMessages(prev => [...prev, aiMsg]);
+
+    setMessages(prev => {
+
+      // remove ONLY latest thinking message
+      const filtered = prev.filter(
+
+        msg => !(
+          msg.role === 'ai' &&
+          msg.state === 'thinking'
+        )
+      )
+
+      return [
+
+        ...filtered,
+
+        aiMsg
+      ]
+    })
+
+    if (origin === 'voice') {
+
+      setTimeout(() => {
+
+        const cleanSpeech = aiMsg.content
+
+          // remove FILE sections
+          .split('FILE:')[0]
+
+          // remove code blocks
+          .replace(
+            /<CODE_BLOCK_START>[\s\S]*?<CODE_BLOCK_END>/g,
+            ''
+          )
+
+          .trim()
+
+        speakText(
+          cleanSpeech
+        )
+
+      }, 400)
+    }
+
     setIsProcessing(false);
 
   }, []);
+
+  const handleVoiceTranscript = (
+      transcript
+    ) => {
+
+      handleSend(
+        transcript,
+        'voice'
+      )
+    }
 
   const recognitionRef = useRef(null);
 
@@ -266,7 +521,6 @@ const handleRecordingStart = async () => {
 
             handleSend(
               data.transcript,
-              "voice"
             )
           }
 
@@ -371,6 +625,7 @@ const handleRecordingStart = async () => {
             onSend={handleSend}
             onRecordingStart={handleRecordingStart}
             onRecordingStop={handleRecordingStop}
+            onVoiceTranscript={handleVoiceTranscript}
             isProcessing={isProcessing}
           />
         </div>

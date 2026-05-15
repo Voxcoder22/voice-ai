@@ -20,7 +20,6 @@ import './Sidebar.css';
 const TABS = [
   { id: 'sessions', icon: BsClockHistory, label: 'Sessions' },
   { id: 'logs',     icon: BsJournalCode,  label: 'Logs'     },
-  { id: 'settings', icon: BsGearFill,     label: 'Settings' },
 ];
 
 export default function Sidebar({

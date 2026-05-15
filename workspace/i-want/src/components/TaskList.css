@@ -1,0 +1,74 @@
+.task-list {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 20px;
+  background: var(--bg);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.task-list h2 {
+  color: var(--text-h);
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.task-input {
+  display: flex;
+  margin-bottom: 20px;
+}
+
+.task-input input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-family: var(--sans);
+}
+
+.task-input button {
+  padding: 10px 15px;
+  margin-left: 10px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.task-input button:hover {
+  background: var(--accent-border);
+}
+
+.task-list ul {
+  list-style: none;
+  padding: 0;
+}
+
+.task-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  margin-bottom: 10px;
+  background: var(--social-bg);
+  border-radius: 4px;
+}
+
+.task-list li.completed span {
+  text-decoration: line-through;
+  color: var(--text);
+}
+
+.task-list li button {
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.task-list li button:hover {
+  background: var(--accent-border);
+}
